@@ -1,0 +1,92 @@
+version: '3.4'
+
+services:
+  service-product-order-command:
+    build:
+      context: ./product-order-command
+      dockerfile: Dockerfile
+    container_name: service-product-order-command
+    restart: always
+    depends_on:
+      - postgres-product-order-command
+    ports:
+      - 3001:3001
+
+  service-product-order-query:
+    build:
+      context: ./product-order-query
+      dockerfile: Dockerfile
+    container_name: service-product-order-query
+    restart: always
+    depends_on:
+      - postgres-product-order-query
+    ports:
+      - 3002:3002
+
+  service-product-order-payment-command:
+    build:
+      context: ./product-order-payment-command
+      dockerfile: Dockerfile
+    container_name: service-product-order-payment-command
+    depends_on:
+      - postgres-product-order-payment-command
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  postgres-product-order-command:
+    image: postgres
+    container_name: postgres-product-order-command
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5433:5432
+    volumes:
+      - ./product-order-command/database/data:/var/lib/postgresql/data
+      - ./product-order-command/database/entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh
+      - ./product-order-command/database/pg_hba.conf:/docker-entrypoint-initdb.d/pg_hba.conf
+      - ./product-order-command/database/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+
+  postgres-product-order-query:
+    image: postgres
+    container_name: postgres-product-order-query
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5435:5432
+    depends_on:
+      - postgres-product-order-command
+    volumes:
+      - ./product-order-query/database/data:/var/lib/postgresql/data
+      - ./product-order-query/database/entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh
+      - ./product-order-query/database/pg_hba.conf:/docker-entrypoint-initdb.d/pg_hba.conf
+      - ./product-order-query/database/postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+      - ./product-order-query/database/standby.signal:/docker-entrypoint-initdb.d/standby.signal
+
+  postgres-product-order-payment-command:
+    image: postgres
+    container_name: postgres-product-order-payment-command
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5434:5432
+    volumes:
+      - ./product-order-payment-command/database/data:/var/lib/postgresql/data
+      - ./product-order-payment-command/database/entrypoint.sh:/docker-entrypoint-initdb.d/entrypoint.sh

@@ -1,0 +1,9 @@
+[submodule "product-order-command"]
+	path = product-order-command
+	url = git@github.com:viniciuslucas95/microservices-cqrs-product-order-command.git
+[submodule "product-order-query"]
+    path = product-order-query
+    url = git@github.com:viniciuslucas95/microservices-cqrs-product-order-query.git
+[submodule "product-order-payment-command"]
+    path = product-order-payment-command
+    url = git@github.com:viniciuslucas95/microservices-cqrs-product-order-payment-command.git
