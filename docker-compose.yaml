@@ -9,6 +9,7 @@ services:
     restart: always
     depends_on:
       - postgres-product-order-command
+      - rabbitmq
     ports:
       - 3001:3001
 
@@ -20,6 +21,7 @@ services:
     restart: always
     depends_on:
       - postgres-product-order-query
+      - rabbitmq
     ports:
       - 3002:3002
 
@@ -30,6 +32,7 @@ services:
     container_name: service-product-order-payment-command
     depends_on:
       - postgres-product-order-payment-command
+      - rabbitmq
     restart: always
 
   rabbitmq:
