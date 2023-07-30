@@ -1,0 +1,11 @@
+{
+  "name": "microservices-cqrs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "install": "cd product-order-command && npm i && cd ../product-order-query && npm i && cd ../product-order-payment-command && npm i && cd .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
